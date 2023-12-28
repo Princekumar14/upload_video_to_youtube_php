@@ -1,0 +1,6 @@
+{
+    "require": {
+        "guzzlehttp/ringphp": "^1.1",
+        "google/apiclient": "^2.15"
+    }
+}

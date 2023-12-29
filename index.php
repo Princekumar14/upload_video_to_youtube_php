@@ -82,5 +82,51 @@ if (!empty($_SESSION['status_response'])) {
 
         </div>
     </div>
+
+<?php
+    include_once './dbconfig.php';
+    // Fetch video details from the database 
+    $sqlQ = "SELECT * FROM videos ORDER BY id desc"; 
+    $stmt = $db->prepare($sqlQ);
+    $stmt->execute(); 
+    $result = $stmt->get_result();
+    $videoData = $result->fetch_all(MYSQLI_ASSOC);
+
+
+?>
+    <div class="container-fluid p-sm-5 mt-5" >
+      <div class="row" id="all_vid">
+      <h2>Uploaded Video List :</h2>
+         <?php 
+         $vidCount = count($videoData);
+        if($vidCount>0){
+            for($i = 0; $i < $vidCount; $i++){ 
+                
+                $youtubeURL = 'https://youtu.be/'.$videoData[$i]['youtube_video_id']; 
+                $privacy_class = ($videoData[$i]['privacy'] == 'private')?'danger':'success'; 
+        ?>
+         
+         <div class="col-xl-3 col-lg-4 col-sm-6 mb-4">
+            <div class="card">
+                <embed width="100%" src="https://www.youtube.com/embed/<?php echo $videoData[$i]['youtube_video_id']; ?>" style="height: 350px;"></embed>
+
+                <div class="card-body m-2" style="height:260px">
+                    <h5 class="card-title"><?php echo $videoData[$i]['title']; ?></h5>
+                    <p class="card-text"><?php echo $videoData[$i]['description']; ?></p>
+                    <p><b>Tags:</b> <?php echo $videoData[$i]['tags']; ?></p>
+                    <p><b>Privacy:</b> <span class="badge bg-<?php echo $privacy_class; ?>"><?php echo $videoData[$i]['privacy']; ?></span></p>
+                    <p><b>YouTube URL:</b> <a href="<?php echo $youtubeURL; ?>" target="_blank"><?php echo $youtubeURL; ?></a></p>
+               </div>
+            </div>
+         </div>
+         <?php
+          } 
+        }else{
+           echo "<h3>No Video Uploaded.</h3>";     
+        }
+         ?>
+
+      </div>
+   </div>
 </body>
 </html>
